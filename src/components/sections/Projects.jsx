@@ -7,7 +7,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="scroll-mt-20 py-20 md:py-28 pl-5 pr-5 md:pl-24 md:pr-8 lg:pl-32 lg:pr-16 bg-paper-alt"
+      className="scroll-mt-20 py-20 md:py-28 pl-5 pr-5 md:pl-24 md:pr-8 lg:pl-32 lg:pr-16 bg-paper-alt dark:bg-paper-alt-d"
     >
       <div className="max-w-6xl">
         <SectionTag hash="e400" label="Projects" />
@@ -17,11 +17,11 @@ export default function Projects() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-15%' }}
           transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl mb-3"
+          className="font-display font-bold text-3xl md:text-4xl mb-3 text-ink dark:text-ink-d"
         >
           Shipped and live.
         </motion.h2>
-        <p className="text-ink-soft mb-10 max-w-xl">
+        <p className="text-ink-soft dark:text-ink-soft-d mb-10 max-w-xl">
           A few builds that made it from an empty folder to a real, deployed link.
         </p>
 

@@ -16,7 +16,7 @@ export default function BuildLogRail({ children }) {
   return (
     <div ref={containerRef} className="relative">
       <div
-        className="hidden md:block absolute left-6 lg:left-10 top-0 bottom-0 w-px bg-border"
+        className="hidden md:block absolute left-6 lg:left-10 top-0 bottom-0 w-px bg-border dark:bg-border-d"
         aria-hidden="true"
       />
       <motion.div

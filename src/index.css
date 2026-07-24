@@ -7,10 +7,10 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-paper text-ink font-body antialiased;
+    @apply bg-paper text-ink font-body antialiased transition-colors duration-300;
   }
   ::selection {
-    @apply bg-add-soft text-ink;
+    @apply bg-add-soft text-ink dark:text-ink-d;
   }
 }
 
@@ -49,5 +49,15 @@
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: #3da35d;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0f1318;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #2a2f37;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #3da35d;
 }

@@ -39,11 +39,11 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-15%' }}
           transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl mb-3"
+          className="font-display font-bold text-3xl md:text-4xl mb-3 text-ink dark:text-ink-d"
         >
           Let's build something together.
         </motion.h2>
-        <p className="text-ink-soft mb-10 max-w-xl">
+        <p className="text-ink-soft dark:text-ink-soft-d mb-10 max-w-xl">
           Open to frontend and full-stack opportunities — reach out through whichever works best.
         </p>
 
@@ -58,14 +58,14 @@ export default function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="group bg-surface border border-border rounded-xl p-5 hover:border-add/50 hover:shadow-md transition-all"
+              className="group bg-surface dark:bg-surface-d border border-border dark:border-border-d rounded-xl p-5 hover:border-add/50 hover:shadow-md transition-all"
             >
               <div className="w-10 h-10 rounded-lg bg-add-soft text-add flex items-center justify-center mb-4">
                 <method.icon className="text-lg" />
               </div>
               <p className="hash-label mb-1">{method.label}</p>
               <div className="flex items-center justify-between gap-2">
-                <span className="font-medium text-ink break-all">{method.value}</span>
+                <span className="font-medium text-ink dark:text-ink-d break-all">{method.value}</span>
                 <FiArrowUpRight className="text-ink-faint group-hover:text-add shrink-0 transition-colors" />
               </div>
             </motion.a>

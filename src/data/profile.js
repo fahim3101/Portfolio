@@ -55,7 +55,7 @@ const profile = {
     {
       hash: 'd103',
       institution: 'Adamjee Cantonment College',
-      degree: 'Higher Secondary Certificate (HSC)',
+      degree: 'Higher Secondary Certificate (HSC) — Science',
       meta: 'GPA 5.00 / 5.00',
       period: '2023',
     },

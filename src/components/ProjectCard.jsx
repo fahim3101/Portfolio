@@ -9,7 +9,7 @@ export default function ProjectCard({ project, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="group bg-surface border border-border rounded-xl overflow-hidden hover:border-add/50 hover:shadow-lg transition-all duration-300"
+      className="group bg-surface dark:bg-surface-d border border-border dark:border-border-d rounded-xl overflow-hidden hover:border-add/50 hover:shadow-lg transition-all duration-300"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-terminal">
         <img
@@ -23,12 +23,12 @@ export default function ProjectCard({ project, index }) {
       </div>
 
       <div className="p-5">
-        <h3 className="font-display font-semibold text-xl mb-1.5">{project.name}</h3>
-        <p className="text-ink-soft text-sm leading-relaxed mb-4 line-clamp-2">{project.tagline}</p>
+        <h3 className="font-display font-semibold text-xl mb-1.5 text-ink dark:text-ink-d">{project.name}</h3>
+        <p className="text-ink-soft dark:text-ink-soft-d text-sm leading-relaxed mb-4 line-clamp-2">{project.tagline}</p>
 
         <div className="flex flex-wrap gap-1.5 mb-5">
           {project.techStack.slice(0, 3).map((tech) => (
-            <span key={tech} className="font-mono text-xs text-ink-faint bg-paper px-2 py-1 rounded">
+            <span key={tech} className="font-mono text-xs text-ink-faint dark:text-ink-faint-d bg-paper dark:bg-paper-d px-2 py-1 rounded">
               {tech}
             </span>
           ))}

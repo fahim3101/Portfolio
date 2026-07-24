@@ -17,11 +17,11 @@ export default function ProjectDetail() {
   if (!project) return <Navigate to="/" replace />
 
   return (
-    <div className="pt-24 pb-20 px-5 md:px-8">
+    <div className="pt-24 pb-20 px-5 md:px-8 bg-paper dark:bg-paper-d transition-colors duration-300">
       <div className="max-w-content mx-auto">
         <Link
           to="/#projects"
-          className="inline-flex items-center gap-2 text-ink-soft hover:text-add transition-colors mb-8 font-medium text-sm"
+          className="inline-flex items-center gap-2 text-ink-soft dark:text-ink-soft-d hover:text-add transition-colors mb-8 font-medium text-sm"
         >
           <FiArrowLeft /> Back to projects
         </Link>
@@ -34,15 +34,15 @@ export default function ProjectDetail() {
           <span className="hash-label">
             <span className="text-ink-faint">commit</span> {project.hash}
           </span>
-          <h1 className="font-display font-bold text-3xl md:text-5xl mt-2 mb-3">{project.name}</h1>
-          <p className="text-ink-soft text-lg max-w-2xl">{project.tagline}</p>
+          <h1 className="font-display font-bold text-3xl md:text-5xl mt-2 mb-3 text-ink dark:text-ink-d">{project.name}</h1>
+          <p className="text-ink-soft dark:text-ink-soft-d text-lg max-w-2xl">{project.tagline}</p>
 
           <div className="flex flex-wrap gap-3 mt-6">
             <a
               href={project.liveLink}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-ink text-white px-5 py-2.5 rounded-md font-medium hover:bg-add transition-colors"
+              className="inline-flex items-center gap-2 bg-ink text-white dark:bg-add dark:text-ink-d px-5 py-2.5 rounded-md font-medium hover:bg-add hover:text-white dark:hover:bg-ink-d dark:hover:text-ink transition-colors"
             >
               <FiExternalLink /> Live Project
             </a>
@@ -50,7 +50,7 @@ export default function ProjectDetail() {
               href={project.githubLink}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 border border-border px-5 py-2.5 rounded-md font-medium hover:border-add hover:text-add transition-colors"
+              className="inline-flex items-center gap-2 border border-border dark:border-border-d px-5 py-2.5 rounded-md font-medium text-ink dark:text-ink-d hover:border-add hover:text-add transition-colors"
             >
               <FiGithub /> GitHub (Client)
             </a>
@@ -95,8 +95,8 @@ export default function ProjectDetail() {
             transition={{ duration: 0.5 }}
           >
             <p className="hash-label mb-3">// tech stack</p>
-            <div className="bg-surface border border-border rounded-xl p-5 mb-6">
-              <p className="font-mono text-sm text-ink mb-3">{project.mainStack}</p>
+            <div className="bg-surface dark:bg-surface-d border border-border dark:border-border-d rounded-xl p-5 mb-6">
+              <p className="font-mono text-sm text-ink dark:text-ink-d mb-3">{project.mainStack}</p>
               <div className="flex flex-wrap gap-2">
                 {project.techStack.map((tech) => (
                   <span key={tech} className="tag-add">
@@ -114,7 +114,7 @@ export default function ProjectDetail() {
             transition={{ duration: 0.5, delay: 0.05 }}
           >
             <p className="hash-label mb-3">// description</p>
-            <p className="text-ink-soft leading-relaxed">{project.description}</p>
+            <p className="text-ink-soft dark:text-ink-soft-d leading-relaxed">{project.description}</p>
           </motion.div>
         </div>
 
@@ -124,12 +124,12 @@ export default function ProjectDetail() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-10%' }}
             transition={{ duration: 0.5 }}
-            className="bg-remove-soft border border-remove/20 rounded-xl p-6"
+            className="bg-remove-soft dark:bg-remove-soft-d border border-remove/20 rounded-xl p-6"
           >
             <div className="flex items-center gap-2 mb-3 text-remove font-display font-semibold">
               <FiAlertTriangle /> Challenges Faced
             </div>
-            <p className="text-ink-soft leading-relaxed text-sm">{project.challenges}</p>
+            <p className="text-ink-soft dark:text-ink-soft-d leading-relaxed text-sm">{project.challenges}</p>
           </motion.div>
 
           <motion.div
@@ -137,12 +137,12 @@ export default function ProjectDetail() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-10%' }}
             transition={{ duration: 0.5, delay: 0.05 }}
-            className="bg-add-soft border border-add/20 rounded-xl p-6"
+            className="bg-add-soft dark:bg-add-soft-d border border-add/20 rounded-xl p-6"
           >
             <div className="flex items-center gap-2 mb-3 text-add font-display font-semibold">
               <FiTrendingUp /> Future Improvements
             </div>
-            <p className="text-ink-soft leading-relaxed text-sm">{project.improvements}</p>
+            <p className="text-ink-soft dark:text-ink-soft-d leading-relaxed text-sm">{project.improvements}</p>
           </motion.div>
         </div>
       </div>

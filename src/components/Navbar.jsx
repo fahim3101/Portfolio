@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiMenu, HiX } from 'react-icons/hi'
+import ThemeToggle from './ThemeToggle'
 import profile from '../data/profile'
 
 const NAV_LINKS = [
@@ -15,8 +16,13 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [isDark, setIsDark] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains('dark'))
+  }, [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -36,16 +42,59 @@ export default function Navbar() {
     }
   }
 
+  // Light mode preserves the original transparent-top + terminal-scrolled look.
+  // Dark mode uses an adaptive navbar on non-home pages so the page's dark
+  // background shows through instead of a dark bar on dark bar.
+  const useTerminalStyle = !isDark
+
+  const headerClass = useTerminalStyle
+    ? scrolled
+      ? 'bg-terminal/95 backdrop-blur-sm border-b border-terminal-line'
+      : 'bg-transparent'
+    : scrolled
+      ? 'bg-terminal/95 backdrop-blur-sm border-b border-terminal-line'
+      : 'bg-paper-d/80 backdrop-blur-sm border-b border-border-d'
+
+  const linkClass = useTerminalStyle
+    ? 'text-white/70 hover:text-add'
+    : scrolled
+      ? 'text-white/70 hover:text-add'
+      : 'text-ink-soft-d hover:text-add'
+
+  const brandClass = useTerminalStyle
+    ? 'text-white'
+    : scrolled
+      ? 'text-white'
+      : 'text-ink-d'
+
+  const brandTildeClass = useTerminalStyle
+    ? 'text-ink-faint'
+    : scrolled
+      ? 'text-white/60'
+      : 'text-ink-faint-d'
+
+  const mobileBtnClass = useTerminalStyle
+    ? 'text-white'
+    : scrolled
+      ? 'text-white'
+      : 'text-ink-d'
+
+  const mobileMenuClass = useTerminalStyle
+    ? 'bg-terminal border-t border-terminal-line'
+    : 'bg-paper-d border-t border-border-d'
+
+  const mobileLinkClass = useTerminalStyle
+    ? 'text-white/80 hover:text-add'
+    : 'text-ink-d hover:text-add'
+
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
-        scrolled ? 'bg-terminal/95 backdrop-blur-sm border-b border-terminal-line' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${headerClass}`}
     >
       <nav className="max-w-content mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="font-mono text-sm md:text-base text-add flex items-center gap-1.5">
-          <span className="text-ink-faint">~/</span>
-          <span className="text-white font-semibold">fahim</span>
+          <span className={brandTildeClass}>~/</span>
+          <span className={`font-semibold ${brandClass}`}>fahim</span>
           <span className="animate-pulse text-add">_</span>
         </Link>
 
@@ -54,14 +103,15 @@ export default function Navbar() {
             <button
               key={link.href}
               onClick={() => handleNavClick(link.href)}
-              className="text-sm text-white/70 hover:text-add transition-colors font-medium"
+              className={`text-sm transition-colors font-medium ${linkClass}`}
             >
               {link.label}
             </button>
           ))}
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle terminalStyle={useTerminalStyle} scrolled={scrolled} onChange={setIsDark} />
           <a
             href={profile.resumeLink}
             target={profile.resumeLink === '#' ? undefined : '_blank'}
@@ -75,7 +125,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="md:hidden text-white text-2xl"
+          className={`md:hidden text-2xl ${mobileBtnClass}`}
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -90,14 +140,14 @@ export default function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="md:hidden bg-terminal border-t border-terminal-line overflow-hidden"
+            className={`md:hidden overflow-hidden ${mobileMenuClass}`}
           >
             <div className="flex flex-col px-5 py-4 gap-1">
               {NAV_LINKS.map((link) => (
                 <button
                   key={link.href}
                   onClick={() => handleNavClick(link.href)}
-                  className="text-left text-white/80 hover:text-add py-2.5 font-medium"
+                  className={`text-left py-2.5 font-medium ${mobileLinkClass}`}
                 >
                   {link.label}
                 </button>
@@ -112,6 +162,9 @@ export default function Navbar() {
               >
                 resume.pdf
               </a>
+              <div className="flex justify-center mt-2">
+                <ThemeToggle terminalStyle={useTerminalStyle} scrolled onChange={setIsDark} />
+              </div>
             </div>
           </motion.div>
         )}

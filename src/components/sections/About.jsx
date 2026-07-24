@@ -17,7 +17,7 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-15%' }}
           transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl mb-8"
+          className="font-display font-bold text-3xl md:text-4xl mb-8 text-ink dark:text-ink-d"
         >
           A bit about who's behind the code.
         </motion.h2>
@@ -31,7 +31,7 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-10%' }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="text-ink-soft leading-relaxed text-base md:text-lg"
+                className="text-ink-soft dark:text-ink-soft-d leading-relaxed text-base md:text-lg"
               >
                 {para}
               </motion.p>
