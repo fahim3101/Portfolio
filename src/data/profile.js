@@ -6,7 +6,7 @@ const profile = {
   phone: '+880 1818-858015',
   whatsapp: '+880 1818-858015',
   photo: '/images/profile/fahim.png',
-  resumeLink: '/resume.pdf',
+  resumeLink: '/Fahim_Rana_Resume.pdf',
   socials: {
     github: 'https://github.com/fahim3101',
     linkedin: 'https://linkedin.com/in/fahim-rana',

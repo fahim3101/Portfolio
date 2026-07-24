@@ -60,6 +60,7 @@ export default function Hero() {
               href={profile.resumeLink}
               target={profile.resumeLink === '#' ? undefined : '_blank'}
               rel="noreferrer"
+              download={profile.resumeLink !== '#' ? 'Fahim_Rana_Resume.pdf' : undefined}
               onClick={(e) => profile.resumeLink === '#' && e.preventDefault()}
               className="inline-flex items-center gap-2 bg-add text-terminal font-semibold px-5 py-3 rounded-md hover:bg-add/90 transition-colors"
             >

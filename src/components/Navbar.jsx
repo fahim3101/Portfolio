@@ -66,6 +66,7 @@ export default function Navbar() {
             href={profile.resumeLink}
             target={profile.resumeLink === '#' ? undefined : '_blank'}
             rel="noreferrer"
+            download={profile.resumeLink !== '#' ? 'Fahim_Rana_Resume.pdf' : undefined}
             onClick={(e) => profile.resumeLink === '#' && e.preventDefault()}
             className="font-mono text-sm px-4 py-2 rounded-md border border-add/40 text-add hover:bg-add hover:text-terminal transition-colors"
           >
@@ -105,6 +106,7 @@ export default function Navbar() {
                 href={profile.resumeLink}
                 target={profile.resumeLink === '#' ? undefined : '_blank'}
                 rel="noreferrer"
+                download={profile.resumeLink !== '#' ? 'Fahim_Rana_Resume.pdf' : undefined}
                 onClick={(e) => profile.resumeLink === '#' && e.preventDefault()}
                 className="font-mono text-sm mt-2 px-4 py-2.5 rounded-md border border-add/40 text-add text-center"
               >
