@@ -6,7 +6,7 @@ const profile = {
   phone: '+880 1818-858015',
   whatsapp: '+880 1818-858015',
   photo: '/images/profile/fahim.png',
-  resumeLink: '#',
+  resumeLink: '/resume.pdf',
   socials: {
     github: 'https://github.com/fahim3101',
     linkedin: 'https://linkedin.com/in/fahim-rana',
@@ -41,7 +41,7 @@ const profile = {
     {
       category: 'Academic',
       hash: 'c005',
-      items: ['Java'],
+      items: ['C/C++', 'Data Structures & Algorithms', 'Object-Oriented Programming', 'Database Management Systems'],
     },
   ],
   education: [
