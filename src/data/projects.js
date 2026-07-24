@@ -47,7 +47,7 @@ const projects = [
       'Designing a clean role-based access system for three different roles required careful route protection and backend authorization logic, since each role needed a different dashboard and permission set. Integrating Stripe for donation-related payments alongside ImageBB for image uploads also meant coordinating two separate third-party services smoothly within one flow.',
     improvements:
       "Future plans include an SMS/email alert system to notify nearby donors during urgent blood requests, a donor eligibility tracker based on last donation date, and richer analytics for Volunteers to visualize donation trends over time using Recharts.",
-    liveLink: 'https://lifeline-blood-donation.vercel.app',
+    liveLink: 'https://blood-donation-client-indol.vercel.app',
     githubLink: 'https://github.com/fahim3101/blood-donation-client',
   },
   {
