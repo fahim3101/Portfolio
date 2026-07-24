@@ -124,13 +124,18 @@ export default function Navbar() {
           </a>
         </div>
 
-        <button
-          className={`md:hidden text-2xl ${mobileBtnClass}`}
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          {open ? <HiX /> : <HiMenu />}
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="md:hidden">
+            <ThemeToggle terminalStyle={useTerminalStyle} scrolled={scrolled} onChange={setIsDark} />
+          </div>
+          <button
+            className={`md:hidden text-2xl ${mobileBtnClass}`}
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+          >
+            {open ? <HiX /> : <HiMenu />}
+          </button>
+        </div>
       </nav>
 
       <AnimatePresence>
@@ -162,9 +167,6 @@ export default function Navbar() {
               >
                 resume.pdf
               </a>
-              <div className="flex justify-center mt-2">
-                <ThemeToggle terminalStyle={useTerminalStyle} scrolled onChange={setIsDark} />
-              </div>
             </div>
           </motion.div>
         )}
