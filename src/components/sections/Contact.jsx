@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { FiMail, FiPhone, FiMessageCircle, FiArrowUpRight } from 'react-icons/fi'
-import { FaGithub, FaLinkedin, FaFacebook } from 'react-icons/fa'
+import { FiMail, FiArrowUpRight } from 'react-icons/fi'
+import { FaGithub, FaLinkedin, FaFacebook, FaWhatsapp } from 'react-icons/fa'
 import SectionTag from '../SectionTag'
 import profile from '../../data/profile'
 
@@ -12,16 +12,16 @@ const contactMethods = [
     href: `mailto:${profile.email}`,
   },
   {
-    icon: FiPhone,
-    label: 'Phone',
-    value: profile.phone,
-    href: `tel:${profile.phone.replace(/[^+\d]/g, '')}`,
+    icon: FaLinkedin,
+    label: 'LinkedIn',
+    value: 'linkedin.com/in/fahim-rana',
+    href: profile.socials.linkedin,
   },
   {
-    icon: FiMessageCircle,
-    label: 'WhatsApp',
-    value: profile.whatsapp,
-    href: `https://wa.me/${profile.whatsapp.replace(/[^\d]/g, '')}`,
+    icon: FaGithub,
+    label: 'GitHub',
+    value: 'github.com/fahim3101',
+    href: profile.socials.github,
   },
 ]
 
@@ -52,8 +52,8 @@ export default function Contact() {
             <motion.a
               key={method.label}
               href={method.href}
-              target={method.label === 'WhatsApp' ? '_blank' : undefined}
-              rel={method.label === 'WhatsApp' ? 'noreferrer' : undefined}
+              target="_blank"
+              rel="noreferrer"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
@@ -82,24 +82,6 @@ export default function Contact() {
           <span className="hash-label">// find me elsewhere</span>
           <div className="flex items-center gap-4">
             <a
-              href={profile.socials.github}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-              className="text-ink-soft hover:text-add transition-colors text-xl"
-            >
-              <FaGithub />
-            </a>
-            <a
-              href={profile.socials.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-              className="text-ink-soft hover:text-add transition-colors text-xl"
-            >
-              <FaLinkedin />
-            </a>
-            <a
               href={profile.socials.facebook}
               target="_blank"
               rel="noreferrer"
@@ -107,6 +89,15 @@ export default function Contact() {
               className="text-ink-soft hover:text-add transition-colors text-xl"
             >
               <FaFacebook />
+            </a>
+            <a
+              href={`https://wa.me/${profile.whatsapp.replace(/[^\d]/g, '')}`}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="WhatsApp"
+              className="text-ink-soft hover:text-add transition-colors text-xl"
+            >
+              <FaWhatsapp />
             </a>
           </div>
         </motion.div>

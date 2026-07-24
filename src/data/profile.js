@@ -50,7 +50,7 @@ const profile = {
       institution: 'Bangladesh University of Professionals (BUP)',
       degree: 'BSc in Computer Science and Engineering',
       meta: 'Class of 2027 · 3rd Year',
-      period: '2023 — Present',
+      period: '2024 — Present',
     },
     {
       hash: 'd103',
