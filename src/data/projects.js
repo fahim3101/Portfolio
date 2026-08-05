@@ -7,6 +7,53 @@
 
 const projects = [
   {
+  slug: 'eventpilot-ai',
+  name: 'EventPilot AI',
+  hash: 'd8e2a1',
+  tagline: 'AI-powered tech event discovery platform.',
+  cover: '/images/projects/eventpilot-home.png',      
+  gallery: [
+    '/images/projects/eventpilot-home.png',           
+    '/images/projects/eventpilot-events.png',
+    '/images/projects/eventpilot-chat.png',
+  ],
+  techStack: ['Next.js 14', 'TypeScript', 'Express.js', 'MongoDB', 'Groq API', 'Recharts'],
+  mainStack: 'Next.js 14 + TypeScript + Express + MongoDB + Groq LLM API',
+  description:
+    'EventPilot AI helps users discover and explore tech events with the help of an integrated AI assistant. It combines a Next.js 14 + TypeScript frontend with an Express/MongoDB/TypeScript backend, Google OAuth and JWT-based authentication, Recharts-powered analytics, and a floating AI chat widget powered by the Groq LLM API (llama-3.3-70b-versatile) that helps users find and understand events conversationally.',
+  challenges:
+    'Integrating the Groq LLM API into a floating chat widget while keeping responses fast and context-aware required careful prompt design and state management. Deployment also proved tricky — the frontend (Vercel) and backend (Render) needed separate TypeScript build configurations, and several build errors had to be resolved on both platforms before the two services communicated correctly in production.',
+  improvements:
+    'Planning to add personalized event recommendations based on user interaction history, calendar sync/reminders for saved events, and richer conversational memory for the AI chat widget across sessions.',
+  liveLink: 'https://event-pilot-frontend.vercel.app',   // TODO
+  githubLink: 'https://github.com/fahim3101/EventPilot-frontend', // TODO
+},
+
+{
+    slug: 'crowdfundhub',
+    name: 'CrowdFundHub',
+    hash: 'f52c0a',
+    tagline: 'A credit-based crowdfunding platform for creators and supporters.',
+    cover: '/images/projects/crowdfundhub-home.png',
+    gallery: [
+      '/images/projects/crowdfundhub-home.png',
+      '/images/projects/crowdfundhub-explore.png',
+      '/images/projects/crowdfundhub-dashboard.png',
+      '/images/projects/crowdfundhub-addcampaign.png',
+    ],
+    techStack: ['React', 'Vite', 'Express.js', 'MongoDB', 'Firebase Auth', 'Stripe'],
+    mainStack: 'React (Vite) + Express + MongoDB + Firebase Auth + Stripe',
+    description:
+      'CrowdFundHub is a crowdfunding platform where Creators launch campaigns for projects, causes, and products, and Supporters back them using platform credits. It features three role-based dashboards, a full campaign lifecycle with admin review, a credit-hold contribution flow, and Stripe-powered credit purchases.',
+    challenges:
+      "Building the credit-hold contribution flow was the trickiest part — credits had to be deducted the instant a supporter contributed but only fully confirmed or refunded based on the creator's later decision, which meant carefully handling partial and failed states without corrupting a user's balance. Coordinating three distinct role-based dashboards, each with its own permissions and UI, also required a solid authorization structure on both frontend and backend.",
+    improvements:
+      'Future plans include campaign milestone tracking with visual progress updates, a rewards and perks tier system for supporters at different contribution levels, and real-time chat between creators and supporters for campaign-related questions.',
+    liveLink: 'https://crowd-fund-hub-client.vercel.app',
+    githubLink: 'https://github.com/fahim3101/CrowdFundHub-client',
+  },
+
+  {
     slug: 'boibazaar',
     name: 'BoiBazaar',
     hash: 'a3f9c2',
@@ -28,6 +75,7 @@ const projects = [
     liveLink: 'https://boibazaar-client.vercel.app',
     githubLink: 'https://github.com/fahim3101/boibazaar-client',
   },
+  
   {
     slug: 'lifeline',
     name: 'Lifeline',
@@ -72,29 +120,7 @@ const projects = [
     liveLink: 'https://drivefleet-client-nine.vercel.app',
     githubLink: 'https://github.com/fahim3101/drivefleet-client',
   },
-  {
-    slug: 'crowdfundhub',
-    name: 'CrowdFundHub',
-    hash: 'f52c0a',
-    tagline: 'A credit-based crowdfunding platform for creators and supporters.',
-    cover: '/images/projects/crowdfundhub-home.png',
-    gallery: [
-      '/images/projects/crowdfundhub-home.png',
-      '/images/projects/crowdfundhub-explore.png',
-      '/images/projects/crowdfundhub-dashboard.png',
-      '/images/projects/crowdfundhub-addcampaign.png',
-    ],
-    techStack: ['React', 'Vite', 'Express.js', 'MongoDB', 'Firebase Auth', 'Stripe'],
-    mainStack: 'React (Vite) + Express + MongoDB + Firebase Auth + Stripe',
-    description:
-      'CrowdFundHub is a crowdfunding platform where Creators launch campaigns for projects, causes, and products, and Supporters back them using platform credits. It features three role-based dashboards, a full campaign lifecycle with admin review, a credit-hold contribution flow, and Stripe-powered credit purchases.',
-    challenges:
-      "Building the credit-hold contribution flow was the trickiest part — credits had to be deducted the instant a supporter contributed but only fully confirmed or refunded based on the creator's later decision, which meant carefully handling partial and failed states without corrupting a user's balance. Coordinating three distinct role-based dashboards, each with its own permissions and UI, also required a solid authorization structure on both frontend and backend.",
-    improvements:
-      'Future plans include campaign milestone tracking with visual progress updates, a rewards and perks tier system for supporters at different contribution levels, and real-time chat between creators and supporters for campaign-related questions.',
-    liveLink: 'https://crowd-fund-hub-client.vercel.app',
-    githubLink: 'https://github.com/fahim3101/CrowdFundHub-client',
-  },
+
 ]
 
 export default projects
