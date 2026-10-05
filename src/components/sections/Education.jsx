@@ -1,54 +1,85 @@
 import { motion } from 'framer-motion'
-import { FiBookOpen } from 'react-icons/fi'
-import SectionTag from '../SectionTag'
+import SectionTag, { SectionRule } from '../SectionTag'
+import { stagger, viewport, useReveal } from '../../lib/motion'
 import profile from '../../data/profile'
 
 export default function Education() {
+  const reveal = useReveal()
   return (
-    <section
-      id="education"
-      className="scroll-mt-20 py-20 md:py-28 pl-5 pr-5 md:pl-24 md:pr-8 lg:pl-32 lg:pr-16"
-    >
-      <div className="max-w-5xl">
-        <SectionTag hash="d100" label="Education" />
+    <section id="education" className="relative scroll-mt-24 py-20 md:py-28 md:pl-14 lg:pl-16">
+      <motion.div variants={stagger(0.1)} initial="hidden" whileInView="show" viewport={viewport}>
+        <motion.div variants={reveal}>
+          <SectionTag hash="d100" label="Education" />
+        </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl mb-10 text-ink dark:text-ink-d"
-        >
-          Educational background.
-        </motion.h2>
-
-        <div className="space-y-5 max-w-2xl">
-          {profile.education.map((edu, i) => (
-            <motion.div
-              key={edu.hash}
-              initial={{ opacity: 0, x: -16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="flex gap-4 bg-surface dark:bg-surface-d border border-border dark:border-border-d rounded-xl p-5"
-            >
-              <div className="w-10 h-10 rounded-lg bg-add-soft text-add flex items-center justify-center shrink-0">
-                <FiBookOpen />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-                  <h3 className="font-display font-semibold text-lg text-ink dark:text-ink-d">{edu.institution}</h3>
-                  <span className="font-mono text-xs text-ink-faint dark:text-ink-faint-d">{edu.period}</span>
-                </div>
-                <p className="text-ink-soft dark:text-ink-soft-d mt-1">{edu.degree}</p>
-                <span className="inline-block mt-2 font-mono text-xs text-add bg-add-soft px-2 py-1 rounded">
-                  {edu.meta}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <motion.div variants={reveal}>
+            <SectionRule />
+            <h2 className="max-w-[18ch] text-section font-semibold text-ink dark:text-ink-d">
+              Where the foundations came from.
+            </h2>
+          </motion.div>
+          <motion.p
+            variants={reveal}
+            className="max-w-md text-[15.5px] leading-relaxed text-ink-soft dark:text-ink-soft-d"
+          >
+            Computer science fundamentals first — data structures, OOP and databases — then the
+            framework work on top of it.
+          </motion.p>
         </div>
-      </div>
+
+        <div className="mt-12 max-w-3xl">
+          <ol className="space-y-5">
+            {profile.education.map((entry) => {
+              const current = /present/i.test(entry.period)
+
+              return (
+                <motion.li
+                  key={entry.hash}
+                  variants={reveal}
+                  className="group relative grid gap-3 md:grid-cols-[6rem_1fr] md:gap-8"
+                >
+                  <div className="flex items-center gap-3 md:pt-6">
+                    <span className="font-mono text-[11.5px] uppercase tracking-[0.12em] text-ink-faint dark:text-ink-faint-d">
+                      {entry.period}
+                    </span>
+                    {current && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-add/25 bg-add-soft px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] accent-text dark:border-add/20 dark:bg-add-soft-d">
+                        <span className="h-1 w-1 rounded-full bg-add" />
+                        now
+                      </span>
+                    )}
+                  </div>
+
+                  <article className="relative overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-card transition-[border-color,box-shadow,transform] duration-300 ease-premium hover:-translate-y-1 hover:border-border-strong hover:shadow-lift dark:border-border-d dark:bg-surface-d dark:shadow-card-d dark:hover:border-border-strong-d dark:hover:shadow-lift-d">
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-y-0 left-0 w-[2px] origin-top scale-y-0 bg-add transition-transform duration-500 ease-premium group-hover:scale-y-100"
+                    />
+
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <h3 className="max-w-[26ch] font-display text-[1.125rem] font-semibold leading-snug tracking-tight text-ink dark:text-ink-d">
+                        {entry.institution}
+                      </h3>
+                      <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-faint dark:text-ink-faint-d">
+                        {entry.hash}
+                      </span>
+                    </div>
+
+                    <p className="mt-2 text-[15.5px] leading-relaxed text-ink-soft dark:text-ink-soft-d">
+                      {entry.degree}
+                    </p>
+
+                    <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-paper px-3 py-1.5 font-mono text-[11.5px] text-ink-soft dark:border-border-d dark:bg-paper-alt-d dark:text-ink-soft-d">
+                      {entry.meta}
+                    </p>
+                  </article>
+                </motion.li>
+              )
+            })}
+          </ol>
+        </div>
+      </motion.div>
     </section>
   )
 }

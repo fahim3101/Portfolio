@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { HiMenu, HiX } from 'react-icons/hi'
 import ThemeToggle from './ThemeToggle'
 import profile from '../data/profile'
+import { EASE } from '../lib/motion'
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
@@ -16,158 +17,216 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
-  const [isDark, setIsDark] = useState(false)
+  const [active, setActive] = useState('')
   const location = useLocation()
   const navigate = useNavigate()
+  const reduceMotion = useReducedMotion()
+
+  const onHome = location.pathname === '/'
 
   useEffect(() => {
-    setIsDark(document.documentElement.classList.contains('dark'))
-  }, [])
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
-    window.addEventListener('scroll', onScroll)
+    const onScroll = () => setScrolled(window.scrollY > 16)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleNavClick = (href) => {
-    setOpen(false)
-    if (location.pathname !== '/') {
-      navigate('/')
-      setTimeout(() => {
-        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
-      }, 100)
-    } else {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+  // Close the mobile sheet whenever the route changes.
+  useEffect(() => setOpen(false), [location.pathname, location.hash])
+
+  // Lock body scroll while the mobile sheet is open.
+  useEffect(() => {
+    if (!open) return
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previous
     }
+  }, [open])
+
+  // Highlight whichever section owns the upper third of the viewport.
+  // Computed from scroll position rather than an IntersectionObserver: an
+  // observer never fires for "nothing is in view", which left the last pill
+  // stuck on the section you had just scrolled back up from.
+  useEffect(() => {
+    if (!onHome) {
+      setActive('')
+      return
+    }
+
+    const compute = () => {
+      const line = window.scrollY + window.innerHeight * 0.35
+      let current = ''
+
+      for (const link of NAV_LINKS) {
+        const section = document.querySelector(link.href)
+        if (!section) continue
+        // Document-absolute: offsetTop would be relative to the rail wrapper.
+        const top = section.getBoundingClientRect().top + window.scrollY
+        if (top <= line) current = link.href
+      }
+
+      setActive(current)
+    }
+
+    compute()
+    window.addEventListener('scroll', compute, { passive: true })
+    window.addEventListener('resize', compute)
+
+    return () => {
+      window.removeEventListener('scroll', compute)
+      window.removeEventListener('resize', compute)
+    }
+  }, [onHome, location.hash])
+
+  const scrollTo = (href) => {
+    const el = document.querySelector(href)
+    if (!el) return
+    el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
   }
 
-  // Light mode preserves the original transparent-top + terminal-scrolled look.
-  // Dark mode uses an adaptive navbar on non-home pages so the page's dark
-  // background shows through instead of a dark bar on dark bar.
-  const useTerminalStyle = !isDark
-
-  const headerClass = useTerminalStyle
-    ? scrolled
-      ? 'bg-terminal/95 backdrop-blur-sm border-b border-terminal-line'
-      : 'bg-transparent'
-    : scrolled
-      ? 'bg-terminal/95 backdrop-blur-sm border-b border-terminal-line'
-      : 'bg-paper-d/80 backdrop-blur-sm border-b border-border-d'
-
-  const linkClass = useTerminalStyle
-    ? 'text-white/70 hover:text-add'
-    : scrolled
-      ? 'text-white/70 hover:text-add'
-      : 'text-ink-soft-d hover:text-add'
-
-  const brandClass = useTerminalStyle
-    ? 'text-white'
-    : scrolled
-      ? 'text-white'
-      : 'text-ink-d'
-
-  const brandTildeClass = useTerminalStyle
-    ? 'text-ink-faint'
-    : scrolled
-      ? 'text-white/60'
-      : 'text-ink-faint-d'
-
-  const mobileBtnClass = useTerminalStyle
-    ? 'text-white'
-    : scrolled
-      ? 'text-white'
-      : 'text-ink-d'
-
-  const mobileMenuClass = useTerminalStyle
-    ? 'bg-terminal border-t border-terminal-line'
-    : 'bg-paper-d border-t border-border-d'
-
-  const mobileLinkClass = useTerminalStyle
-    ? 'text-white/80 hover:text-add'
-    : 'text-ink-d hover:text-add'
+  const handleNav = (href) => {
+    setOpen(false)
+    if (!onHome) {
+      navigate(`/${href}`)
+      return
+    }
+    scrollTo(href)
+    window.history.replaceState(null, '', href)
+    setActive(href)
+  }
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${headerClass}`}
+      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-300 ease-premium ${
+        scrolled || open
+          ? 'border-b border-border bg-paper/80 backdrop-blur-xl backdrop-saturate-150 dark:border-border-d dark:bg-paper-d/75'
+          : 'border-b border-transparent bg-transparent'
+      }`}
     >
-      <nav className="max-w-content mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="font-mono text-sm md:text-base text-add flex items-center gap-1.5">
-          <span className={brandTildeClass}>~/</span>
-          <span className={`font-semibold ${brandClass}`}>fahim</span>
-          <span className="animate-pulse text-add">_</span>
+      <nav
+        aria-label="Primary"
+        className="mx-auto flex h-[68px] max-w-content items-center justify-between gap-4 px-6 md:px-8"
+      >
+        <Link
+          to="/"
+          onClick={() => setActive('')}
+          className="group flex shrink-0 items-center gap-2 rounded-full py-2 pr-3 font-mono text-[13px] leading-none"
+          aria-label={`${profile.name} — home`}
+        >
+          <span className="accent-text">~/</span>
+          <span className="font-display text-[15px] font-semibold tracking-tight text-ink transition-colors duration-200 group-hover:accent-text dark:text-ink-d">
+            fahim
+          </span>
+          <span className="hidden text-ink-faint sm:inline dark:text-ink-faint-d">· portfolio</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((link) => (
-            <button
-              key={link.href}
-              onClick={() => handleNavClick(link.href)}
-              className={`text-sm transition-colors font-medium ${linkClass}`}
-            >
-              {link.label}
-            </button>
-          ))}
-        </div>
+        <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
+          {NAV_LINKS.map((link) => {
+            const isActive = onHome && active === link.href
+            return (
+              <li key={link.href}>
+                <button
+                  type="button"
+                  onClick={() => handleNav(link.href)}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`relative rounded-full px-3.5 py-2.5 text-[13.5px] font-medium transition-colors duration-200 ${
+                    isActive
+                      ? 'text-ink dark:text-ink-d'
+                      : 'text-ink-soft hover:text-ink dark:text-ink-soft-d dark:hover:text-ink-d'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      className="absolute inset-0 -z-10 rounded-full bg-add-soft dark:bg-add-soft-d"
+                      transition={{ duration: 0.35, ease: EASE }}
+                    />
+                  )}
+                  {link.label}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
 
-        <div className="hidden md:flex items-center gap-3">
-          <ThemeToggle terminalStyle={useTerminalStyle} scrolled={scrolled} onChange={setIsDark} />
+        <div className="flex shrink-0 items-center gap-2.5">
+          <ThemeToggle />
+
           <a
             href={profile.resumeLink}
-            target={profile.resumeLink === '#' ? undefined : '_blank'}
+            target="_blank"
             rel="noreferrer"
-            download={profile.resumeLink !== '#' ? 'Fahim_Rana_Resume.pdf' : undefined}
-            onClick={(e) => profile.resumeLink === '#' && e.preventDefault()}
-            className="font-mono text-sm px-4 py-2 rounded-md border border-add/40 text-add hover:bg-add hover:text-terminal transition-colors"
+            className="hidden h-9 items-center rounded-lg border border-border-strong bg-surface px-4 font-mono text-[12px] text-ink transition-colors duration-200 hover:border-add/50 hover:accent-text sm:inline-flex dark:border-border-strong-d dark:bg-surface-d dark:text-ink-d"
           >
-            resume.pdf
+            résumé.pdf
           </a>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <div className="md:hidden">
-            <ThemeToggle terminalStyle={useTerminalStyle} scrolled={scrolled} onChange={setIsDark} />
-          </div>
           <button
-            className={`md:hidden text-2xl ${mobileBtnClass}`}
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-ink transition-colors duration-200 hover:border-add/50 hover:accent-text md:hidden dark:border-border-d dark:bg-surface-d dark:text-ink-d"
           >
-            {open ? <HiX /> : <HiMenu />}
+            {open ? <HiX className="text-lg" /> : <HiMenu className="text-lg" />}
           </button>
         </div>
       </nav>
 
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {open && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className={`md:hidden overflow-hidden ${mobileMenuClass}`}
+            key="mobile-sheet"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.32, ease: EASE }}
+            className="overflow-hidden border-b border-border bg-paper/95 backdrop-blur-xl md:hidden dark:border-border-d dark:bg-paper-d/95"
           >
-            <div className="flex flex-col px-5 py-4 gap-1">
-              {NAV_LINKS.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => handleNavClick(link.href)}
-                  className={`text-left py-2.5 font-medium ${mobileLinkClass}`}
-                >
-                  {link.label}
-                </button>
-              ))}
-              <a
-                href={profile.resumeLink}
-                target={profile.resumeLink === '#' ? undefined : '_blank'}
-                rel="noreferrer"
-                download={profile.resumeLink !== '#' ? 'Fahim_Rana_Resume.pdf' : undefined}
-                onClick={(e) => profile.resumeLink === '#' && e.preventDefault()}
-                className="font-mono text-sm mt-2 px-4 py-2.5 rounded-md border border-add/40 text-add text-center"
+            <ul className="flex flex-col px-6 pb-6 pt-2">
+              {NAV_LINKS.map((link, i) => {
+                const isActive = onHome && active === link.href
+                return (
+                  <motion.li
+                    key={link.href}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: EASE, delay: 0.04 * i }}
+                    className="border-b border-border/70 last:border-0 dark:border-border-d/70"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleNav(link.href)}
+                      className={`flex w-full items-center justify-between py-4 text-left text-[15px] font-medium transition-colors ${
+                        isActive ? 'accent-text' : 'text-ink dark:text-ink-d'
+                      }`}
+                    >
+                      {link.label}
+                      <span className="font-mono text-[11px] text-ink-faint dark:text-ink-faint-d">
+                        0{i + 1}
+                      </span>
+                    </button>
+                  </motion.li>
+                )
+              })}
+
+              <motion.li
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: EASE, delay: 0.24 }}
+                className="pt-5"
               >
-                resume.pdf
-              </a>
-            </div>
+                <a
+                  href={profile.resumeLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-11 w-full items-center justify-center rounded-lg bg-ink font-medium text-surface transition-colors duration-250 hover:bg-add-deep dark:bg-ink-d dark:text-paper-d dark:hover:bg-add"
+                >
+                  Download résumé
+                </a>
+              </motion.li>
+            </ul>
           </motion.div>
         )}
       </AnimatePresence>

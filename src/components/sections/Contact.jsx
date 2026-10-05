@@ -1,107 +1,146 @@
 import { motion } from 'framer-motion'
-import { FiMail, FiArrowUpRight } from 'react-icons/fi'
+import { FiMail, FiArrowUpRight, FiArrowRight, FiDownload } from 'react-icons/fi'
 import { FaGithub, FaLinkedin, FaFacebook, FaWhatsapp } from 'react-icons/fa'
-import SectionTag from '../SectionTag'
+import SectionTag, { SectionRule } from '../SectionTag'
+import { stagger, viewport, useReveal } from '../../lib/motion'
 import profile from '../../data/profile'
 
-const contactMethods = [
+const CHANNELS = [
   {
     icon: FiMail,
     label: 'Email',
+    note: 'Fastest route — best for anything with detail',
     value: profile.email,
     href: `mailto:${profile.email}`,
   },
   {
     icon: FaLinkedin,
     label: 'LinkedIn',
-    value: 'linkedin.com/in/fahim-rana',
+    note: 'Roles, referrals and professional updates',
+    value: 'in/fahim-rana',
     href: profile.socials.linkedin,
   },
   {
     icon: FaGithub,
     label: 'GitHub',
-    value: 'github.com/fahim3101',
+    note: 'Source for most of the work on this page',
+    value: '@fahim3101',
     href: profile.socials.github,
   },
 ]
 
+const SOCIALS = [
+  { label: 'GitHub', href: profile.socials.github, icon: FaGithub },
+  { label: 'LinkedIn', href: profile.socials.linkedin, icon: FaLinkedin },
+  { label: 'Facebook', href: profile.socials.facebook, icon: FaFacebook },
+  { label: 'WhatsApp', href: `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`, icon: FaWhatsapp },
+]
+
 export default function Contact() {
+  const reveal = useReveal()
   return (
-    <section
-      id="contact"
-      className="scroll-mt-20 py-20 md:py-28 pl-5 pr-5 md:pl-24 md:pr-8 lg:pl-32 lg:pr-16"
-    >
-      <div className="max-w-5xl">
-        <SectionTag hash="f900" label="Contact" />
-
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl mb-3 text-ink dark:text-ink-d"
-        >
-          Let's build something together.
-        </motion.h2>
-        <p className="text-ink-soft dark:text-ink-soft-d mb-10 max-w-xl">
-          Open to frontend and full-stack opportunities — reach out through whichever works best.
-        </p>
-
-        <div className="grid sm:grid-cols-3 gap-5 mb-10">
-          {contactMethods.map((method, i) => (
-            <motion.a
-              key={method.label}
-              href={method.href}
-              target="_blank"
-              rel="noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="group bg-surface dark:bg-surface-d border border-border dark:border-border-d rounded-xl p-5 hover:border-add/50 hover:shadow-md transition-all"
-            >
-              <div className="w-10 h-10 rounded-lg bg-add-soft text-add flex items-center justify-center mb-4">
-                <method.icon className="text-lg" />
-              </div>
-              <p className="hash-label mb-1">{method.label}</p>
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-medium text-ink dark:text-ink-d break-all">{method.value}</span>
-                <FiArrowUpRight className="text-ink-faint group-hover:text-add shrink-0 transition-colors" />
-              </div>
-            </motion.a>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-10%' }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex items-center gap-5"
-        >
-          <span className="hash-label">// find me elsewhere</span>
-          <div className="flex items-center gap-4">
-            <a
-              href={profile.socials.facebook}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              className="text-ink-soft hover:text-add transition-colors text-xl"
-            >
-              <FaFacebook />
-            </a>
-            <a
-              href={`https://wa.me/${profile.whatsapp.replace(/[^\d]/g, '')}`}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="WhatsApp"
-              className="text-ink-soft hover:text-add transition-colors text-xl"
-            >
-              <FaWhatsapp />
-            </a>
-          </div>
+    <section id="contact" className="relative scroll-mt-24 py-20 md:py-28 md:pl-14 lg:pl-16">
+      <motion.div variants={stagger(0.1)} initial="hidden" whileInView="show" viewport={viewport}>
+        <motion.div variants={reveal}>
+          <SectionTag hash="f900" label="Contact" />
         </motion.div>
-      </div>
+
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+          {/* ── Invitation ── */}
+          <div>
+            <motion.div variants={reveal}>
+              <SectionRule />
+              <h2 className="max-w-[15ch] text-section font-semibold text-ink dark:text-ink-d">
+                Let’s build something together.
+              </h2>
+            </motion.div>
+
+            <motion.p
+              variants={reveal}
+              className="mt-6 max-w-measure text-[1.0625rem] leading-relaxed text-ink-soft dark:text-ink-soft-d"
+            >
+              I’m open to frontend and full-stack roles, freelance builds, and interesting problems
+              that need someone who cares about the details. If you have a project in mind, I’d
+              like to hear about it.
+            </motion.p>
+
+            <motion.div variants={reveal} className="mt-9 flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${profile.email}`}
+                className="group inline-flex h-12 items-center gap-2.5 rounded-lg bg-ink px-6 text-[14.5px] font-medium text-paper transition-colors duration-250 hover:bg-add-deep dark:bg-ink-d dark:text-paper-d dark:hover:bg-add"
+              >
+                <FiMail className="text-[15px]" />
+                Send an email
+                <FiArrowRight className="text-[15px] transition-transform duration-250 ease-premium group-hover:translate-x-1" />
+              </a>
+
+              <a
+                href={profile.resumeLink}
+                target="_blank"
+                rel="noreferrer"
+                className="group inline-flex h-12 items-center gap-2.5 rounded-lg border border-border-strong bg-surface px-6 text-[14.5px] font-medium text-ink transition-colors duration-250 hover:border-add/50 hover:accent-text dark:border-border-strong-d dark:bg-surface-d dark:text-ink-d"
+              >
+                <FiDownload className="text-[15px] transition-transform duration-250 ease-premium group-hover:translate-y-0.5" />
+                Résumé
+              </a>
+            </motion.div>
+
+            <motion.div variants={reveal} className="mt-10 flex items-center gap-2">
+              {SOCIALS.map(({ label, href, icon: Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`${profile.name} on ${label}`}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink-soft transition-all duration-250 ease-premium hover:-translate-y-0.5 hover:border-add/40 hover:accent-text hover:shadow-card dark:border-border-d dark:text-ink-soft-d dark:hover:shadow-card-d"
+                >
+                  <Icon className="text-[16px]" />
+                </a>
+              ))}
+              <span className="ml-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-faint dark:text-ink-faint-d">
+                Replies within a day
+              </span>
+            </motion.div>
+          </div>
+
+          {/* ── Channels ── */}
+          <motion.ul variants={reveal} className="rounded-2xl border border-border bg-surface p-2 shadow-card dark:border-border-d dark:bg-surface-d dark:shadow-card-d">
+            {CHANNELS.map(({ icon: Icon, label, note, value, href }) => {
+              const isMail = href.startsWith('mailto:')
+
+              return (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target={isMail ? undefined : '_blank'}
+                    rel={isMail ? undefined : 'noreferrer'}
+                    className="group flex items-center gap-4 rounded-xl px-4 py-5 transition-colors duration-250 ease-premium hover:bg-paper-alt sm:gap-5 dark:hover:bg-surface-alt-d"
+                  >
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border text-ink-faint transition-colors duration-250 group-hover:border-add/40 group-hover:bg-add-soft group-hover:accent-text dark:border-border-d">
+                      <Icon className="text-[17px]" />
+                    </span>
+
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-ink-faint dark:text-ink-faint-d">
+                        {label}
+                      </span>
+                      <span className="mt-1 block truncate text-[15px] font-medium text-ink dark:text-ink-d">
+                        {value}
+                      </span>
+                      <span className="mt-1 block text-[13px] leading-snug text-ink-faint dark:text-ink-faint-d">
+                        {note}
+                      </span>
+                    </span>
+
+                    <FiArrowUpRight className="shrink-0 text-[16px] text-ink-faint transition-all duration-250 ease-premium group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:accent-text" />
+                  </a>
+                </li>
+              )
+            })}
+          </motion.ul>
+        </div>
+      </motion.div>
     </section>
   )
 }

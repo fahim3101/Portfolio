@@ -4,23 +4,44 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="MD Fahim Rana — Full Stack Developer building MERN & Next.js applications." />
+    <meta
+      name="description"
+      content="MD Fahim Rana — Full Stack Developer building MERN and Next.js applications, from empty repo to deployed product."
+    />
+    <meta name="theme-color" content="#FBFAF8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B0C0E" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Fahim Rana — Full Stack Developer" />
+    <meta
+      property="og:description"
+      content="Full Stack Developer building MERN and Next.js applications, from empty repo to deployed product."
+    />
+    <meta property="og:image" content="/images/profile/fahim.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <title>Fahim Rana — Full Stack Developer</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
     <script>
+      // Resolve the theme before first paint so there is no flash.
+      // Stored preference wins; otherwise follow the OS.
       (function () {
         try {
-          var t = localStorage.getItem('theme');
-          if (t === 'dark') {
-            document.documentElement.classList.add('dark');
-          }
+          var stored = localStorage.getItem('theme')
+          var dark = stored
+            ? stored === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+          document.documentElement.classList.toggle('dark', dark)
         } catch (e) {}
-      })();
+      })()
     </script>
   </head>
   <body>

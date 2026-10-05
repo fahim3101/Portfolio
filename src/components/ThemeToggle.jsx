@@ -1,48 +1,64 @@
 import { useEffect, useState } from 'react'
-import { FiSun, FiMoon } from 'react-icons/fi'
+import { motion } from 'framer-motion'
+import { FiMoon, FiSun } from 'react-icons/fi'
+import { EASE } from '../lib/motion'
 
-export default function ThemeToggle({ className = '', terminalStyle = true, scrolled = false, onChange }) {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof document === 'undefined') return false
-    return document.documentElement.classList.contains('dark')
-  })
+const readTheme = () => {
+  if (typeof document === 'undefined') return false
+  return document.documentElement.classList.contains('dark')
+}
 
+export default function ThemeToggle({ className = '' }) {
+  const [isDark, setIsDark] = useState(readTheme)
+
+  // Stay in sync if the class is toggled from anywhere else.
   useEffect(() => {
-    // Keep state in sync if the class is changed elsewhere
-    const current = document.documentElement.classList.contains('dark')
-    setIsDark(current)
-    onChange?.(current)
-  }, [onChange])
+    const observer = new MutationObserver(() => setIsDark(readTheme()))
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
 
   const toggle = () => {
     const next = !isDark
-    setIsDark(next)
     document.documentElement.classList.toggle('dark', next)
-    onChange?.(next)
+    setIsDark(next)
     try {
       localStorage.setItem('theme', next ? 'dark' : 'light')
-    } catch (e) {
-      // localStorage might be unavailable in private mode
+    } catch {
+      /* localStorage can be unavailable in private mode */
     }
   }
 
-  // Light mode always uses the white-on-dark styling (matches the original).
-  // Dark mode adapts to whether the navbar is on a dark scrolled bar or
-  // over the page's dark bg.
-  const stateClasses = terminalStyle
-    ? 'border-white/15 text-white/70 hover:text-add hover:border-add/40'
-    : scrolled
-      ? 'border-white/15 text-white/70 hover:text-add hover:border-add/40'
-      : 'border-border-d text-ink-soft-d hover:text-add hover:border-add/40'
-
   return (
     <button
+      type="button"
       onClick={toggle}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className={`inline-flex items-center justify-center w-9 h-9 rounded-md border transition-colors ${stateClasses} ${className}`}
+      role="switch"
+      aria-checked={isDark}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      className={`relative inline-flex h-9 w-[62px] shrink-0 items-center rounded-full border border-border bg-surface p-1 transition-colors duration-300 hover:border-border-strong dark:border-border-d dark:bg-surface-alt-d dark:hover:border-border-strong-d ${className}`}
     >
-      {isDark ? <FiSun className="text-base" /> : <FiMoon className="text-base" />}
+      <motion.span
+        aria-hidden="true"
+        className="absolute left-1 top-1 h-7 w-7 rounded-full bg-ink dark:bg-ink-d"
+        animate={{ x: isDark ? 22 : 0 }}
+        transition={{ duration: 0.32, ease: EASE }}
+      />
+      <span className="relative z-10 flex h-7 w-7 items-center justify-center">
+        <FiSun
+          className={`text-[13px] transition-colors duration-300 ${
+            isDark ? 'text-ink-faint' : 'text-paper'
+          }`}
+        />
+      </span>
+      <span className="relative z-10 flex h-7 w-7 items-center justify-center">
+        <FiMoon
+          className={`text-[13px] transition-colors duration-300 ${
+            isDark ? 'text-paper-d' : 'text-ink-faint'
+          }`}
+        />
+      </span>
     </button>
   )
 }

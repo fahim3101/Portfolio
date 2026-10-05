@@ -1,34 +1,57 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { EASE } from '../lib/motion'
 
 /**
- * Renders the "commit node" for a section: a dot that lights up on the
- * BuildLogRail line when scrolled into view, plus a monospace hash label.
+ * The commit marker that opens every section: a node on the BuildLogRail line
+ * plus a quiet monospace label. Reads as provenance, not decoration.
+ *
+ * The node starts as an empty accent ring and fills in once the section is read
+ * — no theme sniffing needed, because it only ever uses accent colours.
  */
-export default function SectionTag({ hash, label }) {
-  // Read theme synchronously on mount — the inline script in index.html
-  // has already applied the .dark class to <html> by the time we render.
-  const [isDark] = useState(() => {
-    if (typeof document === 'undefined') return false
-    return document.documentElement.classList.contains('dark')
-  })
+/**
+ * The short accent rule that sits above every section heading. Two pixels of
+ * accent doing the work of a whole design decision — cheap, and it gives the
+ * page its editorial cadence.
+ */
+export function SectionRule() {
+  return (
+    <span aria-hidden="true" className="mb-5 block h-[2px] w-10 rounded-full bg-add" />
+  )
+}
 
-  const idleBg = isDark ? '#1A1F26' : '#EDEFEA'
-  const idleBorder = isDark ? '#2A2F37' : '#D5D9CF'
+export default function SectionTag({ hash, label }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, amount: 0.8 })
 
   return (
-    <div className="relative flex items-center mb-4">
-      {/* Positioned to land exactly on the BuildLogRail line: section padding
-          (pl-24 / pl-32) minus the rail's own offset (left-6 / left-10). */}
-      <motion.span
-        initial={{ backgroundColor: idleBg, borderColor: idleBorder }}
-        whileInView={{ backgroundColor: 'rgba(61,163,93,1)', borderColor: '#3DA35D' }}
-        viewport={{ once: true, margin: '-35% 0px -35% 0px' }}
-        transition={{ duration: 0.4 }}
-        className="hidden md:block absolute top-1/2 -translate-y-1/2 md:-left-[72px] lg:-left-[88px] w-3 h-3 rounded-full border-2 shrink-0 z-10"
-      />
-      <span className="hash-label">
-        <span className="text-ink-faint">commit</span> {hash} <span className="text-ink-faint">·</span>{' '}
+    <div ref={ref} className="relative mb-6 flex items-center gap-3">
+      {/*
+        A zero-width anchor pinned to the BuildLogRail line (which sits on the
+        wrapper's padding edge), with the visible dot centred inside it so the
+        line always passes through the dot's centre rather than its edge.
+      */}
+      <span
+        aria-hidden="true"
+        className="absolute left-0 top-0 hidden h-0 w-0 md:-left-14 md:block lg:-left-16"
+      >
+        <motion.span
+          initial={{ backgroundColor: 'rgba(61,163,93,0)', borderColor: 'rgba(61,163,93,0.32)' }}
+          animate={
+            inView
+              ? { backgroundColor: 'rgb(61 163 93)', borderColor: 'rgb(61 163 93)' }
+              : { backgroundColor: 'rgba(61,163,93,0)', borderColor: 'rgba(61,163,93,0.32)' }
+          }
+          transition={{ duration: 0.45, ease: EASE }}
+          className="absolute left-0 top-1/2 block h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border"
+        />
+      </span>
+
+      <span className="font-mono text-[11px] uppercase leading-none tracking-[0.14em] text-ink-faint dark:text-ink-faint-d">
+        {hash}
+      </span>
+      <span aria-hidden="true" className="h-px w-5 bg-border-strong dark:bg-border-strong-d" />
+      <span className="font-mono text-[11px] uppercase leading-none tracking-[0.14em] text-ink-soft dark:text-ink-soft-d">
         {label}
       </span>
     </div>

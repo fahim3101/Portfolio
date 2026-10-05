@@ -3,61 +3,173 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --grid-rgb: 40 34 22;
+    --grid-alpha: 0.05;
+    --noise-opacity: 0.028;
+    /* Darkened accent so accent-coloured text clears WCAG AA on paper */
+    --accent-text: 39 116 63;
+    color-scheme: light;
+  }
+
+  .dark {
+    --grid-rgb: 236 238 241;
+    --grid-alpha: 0.05;
+    --noise-opacity: 0.038;
+    /* Lightened accent so it clears WCAG AA on the dark surface */
+    --accent-text: 95 201 138;
+    color-scheme: dark;
+  }
+
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
+
   body {
-    @apply bg-paper text-ink font-body antialiased transition-colors duration-300;
+    @apply bg-paper font-body text-ink antialiased dark:bg-paper-d dark:text-ink-d;
+    text-rendering: optimizeLegibility;
   }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   ::selection {
-    @apply bg-add-soft text-ink dark:text-ink-d;
+    @apply bg-add/20 text-ink dark:text-ink-d;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.add');
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  img {
+    -webkit-user-drag: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Small monospace metadata — the commit motif, kept quiet */
+  .hash-label {
+    @apply font-mono text-[0.6875rem] uppercase leading-none tracking-[0.14em] text-ink-faint dark:text-ink-faint-d;
+  }
+
+  /* Neutral pill used for tech stacks — warm tint so it reads on a white card */
+  .tag {
+    @apply inline-flex items-center rounded-full border border-border bg-paper px-2.5 py-1 font-mono text-[0.6875rem] leading-none text-ink-soft dark:border-border-d dark:bg-surface-alt-d dark:text-ink-soft-d;
+  }
+
+  /* Accent pill — used sparingly */
+  .tag-accent {
+    @apply inline-flex items-center rounded-full border border-add/25 bg-add-soft px-2.5 py-1 font-mono text-[0.6875rem] leading-none dark:border-add/20 dark:bg-add-soft-d;
+    color: rgb(var(--accent-text));
+  }
+
+  /* Hairline surface used for every card in the system */
+  .surface-card {
+    @apply rounded-2xl border border-border bg-surface shadow-card dark:border-border-d dark:bg-surface-d dark:shadow-card-d;
   }
 }
 
 @layer utilities {
-  .tag-add {
-    @apply font-mono text-sm px-3 py-1.5 rounded-md bg-add-soft text-add border border-add/20;
+  /* Theme-aware accent text — always AA on the current surface */
+  .accent-text {
+    color: rgb(var(--accent-text));
   }
-  .tag-add::before {
-    content: '+ ';
+
+  /* Faint engineering grid, faded out toward the edges */
+  .grid-field {
+    background-image: linear-gradient(to right, rgb(var(--grid-rgb) / var(--grid-alpha)) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(var(--grid-rgb) / var(--grid-alpha)) 1px, transparent 1px);
+    background-size: 68px 68px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 0%, transparent 78%);
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 0%, transparent 78%);
   }
-  .hash-label {
-    @apply font-mono text-xs text-ink-faint tracking-wide;
+
+  /* Static film grain — kills gradient banding, adds tactility */
+  .noise-field {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  .edge-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+
+  .edge-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Custom scrollbar for a slightly more crafted feel */
+/* Scrollbar — thin and neutral */
 ::-webkit-scrollbar {
   width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #edefea;
-}
-::-webkit-scrollbar-thumb {
-  background: #c7ccc0;
-  border-radius: 6px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #3da35d;
+  height: 10px;
 }
 
-.dark ::-webkit-scrollbar-track {
-  background: #0f1318;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-.dark ::-webkit-scrollbar-thumb {
-  background: #2a2f37;
+
+::-webkit-scrollbar-thumb {
+  background: #c7c0af;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
 }
-.dark ::-webkit-scrollbar-thumb:hover {
+
+::-webkit-scrollbar-thumb:hover {
   background: #3da35d;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.dark ::-webkit-scrollbar-thumb,
+html.dark::-webkit-scrollbar-thumb {
+  background: #2f3339;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover,
+html.dark::-webkit-scrollbar-thumb:hover {
+  background: #3da35d;
+  border: 3px solid transparent;
+  background-clip: content-box;
 }

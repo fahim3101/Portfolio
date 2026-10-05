@@ -1,36 +1,47 @@
 import { motion } from 'framer-motion'
-import SectionTag from '../SectionTag'
+import SectionTag, { SectionRule } from '../SectionTag'
 import ProjectCard from '../ProjectCard'
+import { stagger, viewport, useReveal } from '../../lib/motion'
 import projects from '../../data/projects'
 
 export default function Projects() {
+  const reveal = useReveal()
   return (
     <section
       id="projects"
-      className="scroll-mt-20 py-20 md:py-28 pl-5 pr-5 md:pl-24 md:pr-8 lg:pl-32 lg:pr-16 bg-paper-alt dark:bg-paper-alt-d"
+      className="relative scroll-mt-24 border-y border-border bg-paper-alt py-20 md:py-28 md:pl-14 lg:pl-16 dark:border-border-d dark:bg-paper-alt-d"
     >
-      <div className="max-w-6xl">
-        <SectionTag hash="e400" label="Projects" />
+      <motion.div variants={stagger(0.1)} initial="hidden" whileInView="show" viewport={viewport}>
+        <motion.div variants={reveal}>
+          <SectionTag hash="e400" label="Projects" />
+        </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl mb-3 text-ink dark:text-ink-d"
-        >
-          Shipped and live.
-        </motion.h2>
-        <p className="text-ink-soft dark:text-ink-soft-d mb-10 max-w-xl">
-          A few builds that made it from an empty folder to a real, deployed link.
-        </p>
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <motion.div variants={reveal}>
+            <SectionRule />
+            <h2 className="max-w-[16ch] text-section font-semibold text-ink dark:text-ink-d">
+              Five builds, all shipped.
+            </h2>
+            <p className="mt-5 max-w-lg text-[15.5px] leading-relaxed text-ink-soft dark:text-ink-soft-d">
+              Each one went from an empty folder to a deployed, working product — auth, payments,
+              roles and the unglamorous edge cases in between.
+            </p>
+          </motion.div>
 
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          {projects.map((project, i) => (
-            <ProjectCard key={project.slug} project={project} index={i} />
-          ))}
+          <motion.p variants={reveal} className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-faint dark:text-ink-faint-d">
+            {String(projects.length).padStart(2, '0')} repositories · main
+          </motion.p>
         </div>
-      </div>
+
+        <motion.div
+          variants={stagger(0.1)}
+          className="mt-14 grid items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-3"
+        >
+          {projects.map((project) => (
+            <ProjectCard key={project.slug} project={project} />
+          ))}
+        </motion.div>
+      </motion.div>
     </section>
   )
 }
